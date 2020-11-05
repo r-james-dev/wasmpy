@@ -35,7 +35,7 @@ The hook also allows importing the files from submodules, eg:
 ```
 |- main.py
 |- my_module
-|  |- my_wasm_file
+|  |- my_wasm_file.wasm
 ```
 Then 
 ```py
