@@ -1,9 +1,9 @@
-import setuptools
+from setuptools import setup, Extension
 
 with open("README.md", "r") as fp:
     description = fp.read()
 
-setuptools.setup(
+setup(
     name="wasmpy",
     version="0.1.0a2",
     author="James Ryan",
@@ -17,6 +17,7 @@ setuptools.setup(
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "Programming Language :: Assembly",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -25,4 +26,8 @@ setuptools.setup(
     ],
     python_requires=">=3.6",
     license="MIT",
+    ext_modules=
+        [
+            Extension("wasmpy.compiled.values", ["wasmpy/compiled/values.pyx"])
+        ]
 )
