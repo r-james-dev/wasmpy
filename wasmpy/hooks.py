@@ -1,5 +1,37 @@
 from .module import read_module
-import os, sys, types
+import os, sys, warnings
+
+
+class WasmModule(object):
+    """Object representing the module returned on import."""
+    def __init__(self, file=None, loader=None, name=None):
+        """Initialize common attributes of imported modules."""
+        self.__file__ = file
+        self._imports = {}
+        self.__loader__ = loader
+        self.__name__ = name
+        with open(file, "rb") as fp:
+            self._module = read_module(fp)
+
+        # define exported functions as module methods
+        for export in self._module["exports"]:
+            if export["desc"][0] == "func":
+                if export["name"].startswith("_"):
+                    # do not create methods starting with an underscore "_"
+                    warnings.warn(
+                        f"exported function starts with \"_\", this function \
+must be called with _func(\"{export['name']}\")", Warning
+                    )
+                    continue
+
+                self.__setattr__(export["name"], export["desc"][1])
+
+    def __call__(self, imports={}, run=True):
+        """Can be called by user to provide imports and run a start method.
+        imports is a dict object that provides namespaced functions
+        """
+        self._imports.update(imports)
+
 
 class WebAssemblyBinaryLoader(object):
     """WebAssembly binary import hook.
@@ -34,12 +66,6 @@ class WebAssemblyBinaryLoader(object):
         if fullname in sys.modules:
             return
 
-        mod = types.ModuleType(fullname)
-        mod.__file__ = self.fname
-        mod.__name__ = fullname
-        mod.__loader__ = self
+        mod = WasmModule(self.fname, self, fullname)
         sys.modules[fullname] = mod
-        with open(self.fname, "rb") as fp:
-            mod.module = read_module(fp)
-
         return mod
