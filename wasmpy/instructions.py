@@ -41,7 +41,16 @@ def read_instruction(buffer: object) -> "str or tuple":
         return "nop"
 
     if data == b"\x02":
-        rt = read_valtype(buffer)
+        try:
+            rt = read_valtype(buffer)
+
+        except TypeError:
+            buffer.seek(-1, 1)
+            if buffer.read(1)[0] != 64:
+                raise TypeError("Invalid blocktype.")
+
+            rt = None
+
         in_ = []
         instruction = read_instruction(buffer)
         while instruction != "end":
@@ -51,7 +60,16 @@ def read_instruction(buffer: object) -> "str or tuple":
         return "block", rt, tuple(in_), "end"
 
     if data == b"\x03":
-        rt = read_valtype(buffer)
+        try:
+            rt = read_valtype(buffer)
+
+        except TypeError:
+            buffer.seek(-1, 1)
+            if buffer.read(1)[0] != 64:
+                raise TypeError("Invalid blocktype.")
+
+            rt = None
+
         in_ = []
         instruction = read_instruction(buffer)
         while instruction != "end":
@@ -61,7 +79,16 @@ def read_instruction(buffer: object) -> "str or tuple":
         return "loop", rt, tuple(in_), "end"
 
     if data == b"\x04":
-        rt = read_valtype(buffer)
+        try:
+            rt = read_valtype(buffer)
+
+        except TypeError:
+            buffer.seek(-1, 1)
+            if buffer.read(1)[0] != 64:
+                raise TypeError("Invalid blocktype.")
+
+            rt = None
+
         in1 = []
         instruction = read_instruction(buffer)
         while instruction not in ["end", "else"]:
@@ -212,7 +239,7 @@ def read_instruction(buffer: object) -> "str or tuple":
         return "i32.const", read_sint(buffer, 32)
 
     if data == b"\x42":
-        return "i64.const", read_sint(buffer, 32)
+        return "i64.const", read_sint(buffer, 64)
 
     if data == b"\x43":
         return "f32.const", read_f32(buffer)

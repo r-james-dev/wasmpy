@@ -37,20 +37,22 @@ def read_uint(buffer, bits):
 def read_sint(buffer, bits):
     """Read a signed integer stored in LEB128 format."""
     # https://www.w3.org/TR/wasm-core-1/#integers%E2%91%A4
-    shift = 0
-    byte = buffer.read(1)[0]
-    result = byte & 127
-    consumed_bytes = 1
-
-    byte = buffer.read(1)[0]
-    while byte >> 7:
-        consumed_bytes += 1
-        assert consumed_bytes <= math.ceil(bits / 7), "Invalid integer"
-        result |= (byte & 127) << shift
-        shift += 7
+    try:
         byte = buffer.read(1)[0]
+        consumed_bytes = 1
+        result = byte & 127
+        shift = 7
+        while byte >> 7:
+            byte = buffer.read(1)[0]
+            consumed_bytes += 1
+            assert consumed_bytes <= math.ceil(bits / 7)
+            result |= (byte & 127) << shift
+            shift += 7
 
-    if shift < bits and (byte >> 6) & 1:
+    except (AssertionError, IndexError):
+        raise TypeError("Invalid integer.")
+
+    if result >> consumed_bytes * 7 - 1:
         result |= ~0 << shift
 
     return result
