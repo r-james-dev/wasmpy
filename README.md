@@ -17,6 +17,8 @@ $ cd wasmpy
 $ python setup.py install
 ```
 
+If you wish to build without compiling the extensions for other python implementations, pass the `--no-compile` option to the `install` command.
+
 # Usage
 WasmPy defines import hooks to make the loading of WebAssembly binary files much easier! Just import the `WasmPy` library then you are good to go!
 ### Example:
