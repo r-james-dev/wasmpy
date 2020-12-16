@@ -1,4 +1,14 @@
 from setuptools import setup, Extension
+import sys
+
+extensions = [
+    Extension("wasmpy.compiled.values", ["wasmpy/compiled/values.pyx"])
+]
+
+if "--no-compile" in sys.argv:
+    sys.argv.remove("--no-compile")
+    extensions = []
+
 
 with open("README.md", "r") as fp:
     description = fp.read()
@@ -26,8 +36,5 @@ setup(
     ],
     python_requires=">=3.6",
     license="MIT",
-    ext_modules=
-        [
-            Extension("wasmpy.compiled.values", ["wasmpy/compiled/values.pyx"])
-        ]
+    ext_modules=extensions
 )
