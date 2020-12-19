@@ -137,13 +137,13 @@ cdef uint64_t read_f64(char *buf, uint32_t *buf_off, valid *v):
     # https://www.w3.org/TR/wasm-core-1/#floating-point%E2%91%A4
     cdef uint64_t val = buf[buf_off[0]]
     # shift left as stored as little endian
-    val |= buf[buf_off[0]+1] << 8
-    val |= buf[buf_off[0]+2] << 16
-    val |= buf[buf_off[0]+3] << 24
-    val |= buf[buf_off[0]+4] << 32
-    val |= buf[buf_off[0]+5] << 40
-    val |= buf[buf_off[0]+6] << 48
-    val |= buf[buf_off[0]+7] << 56
+    val |= <uint64_t>buf[buf_off[0]+1] << 8
+    val |= <uint64_t>buf[buf_off[0]+2] << 16
+    val |= <uint64_t>buf[buf_off[0]+3] << 24
+    val |= <uint64_t>buf[buf_off[0]+4] << 32
+    val |= <uint64_t>buf[buf_off[0]+5] << 40
+    val |= <uint64_t>buf[buf_off[0]+6] << 48
+    val |= <uint64_t>buf[buf_off[0]+7] << 56
     buf_off += 8
     return val
 
