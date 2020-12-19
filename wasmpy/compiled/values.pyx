@@ -8,6 +8,10 @@ cdef struct valid:
     char * err_msg
 
 
+def say_hello():
+    print("Hello, World!")
+
+
 cdef uint32_t get_vec_len(char *buf, uint32_t *buf_off, valid *v):
     """Return the length of a vector consumed from buf."""
     # https://www.w3.org/TR/wasm-core-1/#vectors%E2%91%A2
@@ -131,7 +135,7 @@ cdef uint64_t read_f64(char *buf, uint32_t *buf_off, valid *v):
     """Read a single precision float from buf."""
     # returns a uint64_t so as to eliminate any possible rounding errors
     # https://www.w3.org/TR/wasm-core-1/#floating-point%E2%91%A4
-    cdef uint32_t val = buf[buf_off[0]]
+    cdef uint64_t val = buf[buf_off[0]]
     # shift left as stored as little endian
     val |= buf[buf_off[0]+1] << 8
     val |= buf[buf_off[0]+2] << 16
