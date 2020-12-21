@@ -9,11 +9,13 @@ from .values import get_vec_len, read_name, read_uint
 from .instructions import read_expr
 
 
-def read_customsec(buffer: object, length: int) -> None:
+def read_customsec(buffer: object, length: int) -> tuple:
     """Read a custom section from buffer."""
-    # Does not return anything as custom sections are dropped.
     # https://www.w3.org/TR/wasm-core-1/#custom-section%E2%91%A0
-    buffer.read(length)
+    start = buffer.tell()
+    name = read_name(buffer)
+    bytes = buffer.read(length - (buffer.tell() - start))
+    return name, bytes
 
 
 def read_typesec(buffer: object) -> tuple:

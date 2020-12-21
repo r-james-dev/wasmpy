@@ -21,7 +21,7 @@ empty_module_lists = [
 def read_module(buffer):
     assert preamble[0] == buffer.read(8), "Invalid magic number or version."
 
-    module = {}
+    module = {"custom": ()}
 
     typeidx = None
     code = ()
@@ -43,7 +43,7 @@ def read_module(buffer):
                 break
 
             if not id:
-                read_customsec(buffer, length)
+                module["custom"] += (read_customsec(buffer, length),)
 
             if id == 1:
                 module["types"] = read_typesec(buffer)
