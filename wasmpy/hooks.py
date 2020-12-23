@@ -14,17 +14,27 @@ class WasmModule(object):
             self._module = read_module(fp)
 
         # define exported functions as module methods
+        warned = False
         for export in self._module["exports"]:
-            if export["desc"][0] == "func":
-                if export["name"].startswith("_"):
-                    # do not create methods starting with an underscore "_"
-                    warnings.warn(
-                        f"exported function starts with \"_\", this function \
-must be called with _func(\"{export['name']}\")", Warning
-                    )
-                    continue
+            if export[1][0] == "func":
+                if export[0].startswith("_"):
+                    if "WASMPY_NO_WARN" not in os.environ:
+                        # do not create methods starting with an underscore "_"
+                        warned = True
+                        warnings.warn(
+                            "exported function starts with \"_\", this "
+                            "function must be called with _func(\""
+                            f"{export[0]}\")", Warning
+                        )
+                        continue
 
-                self.__setattr__(export["name"], export["desc"][1])
+                self.__setattr__(export[0], export[1][1])
+
+        if warned:
+            warnings.warn(
+                "wasmpy import warnings can be turned of by setting the "
+                "WASMPY_NO_WARN environment variable", Warning
+            )
 
     def __call__(self, imports={}, run=True):
         """Can be called by user to provide imports and run a start method.
