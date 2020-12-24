@@ -15,7 +15,7 @@ with open("README.md", "r") as fp:
 
 setup(
     name="wasmpy",
-    version="0.1.0a2",
+    version="0.1.0a3",
     author="James Ryan",
     author_email="r.james.dev@gmail.com",
     description="Interactions between WebAssembly and Python",

@@ -73,4 +73,6 @@ def read_f64(buffer):
 def read_name(buffer):
     """Read a name from buffer."""
     # https://www.w3.org/TR/wasm-core-1/#names%E2%91%A2
-    return buffer.read(get_vec_len(buffer)).decode("utf-8")
+    length = get_vec_len(buffer)
+    bytes = buffer.read(length)
+    return bytes.decode("utf-8")
