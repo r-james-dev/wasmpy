@@ -1,9 +1,9 @@
 from .module import read_module
-import os, sys, warnings
+import os, sys, types, warnings
 
 
-class WasmModule(object):
-    """Object representing the module returned on import."""
+class WasmModule(types.ModuleType):
+    """Module subclass which is callable to allow start function execution."""
     def __init__(self, file=None, loader=None, name=None):
         """Initialize common attributes of imported modules."""
         self.__file__ = file
